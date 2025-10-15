@@ -6,9 +6,27 @@ public class hangman {
     private static final String[] WORDS = {"python", "java", "javascript", "kotlin"};
     private static final int MAX_ATTEMPTS = 8;
 
-    
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("HANGMAN:final");
+            System.out.println();
+            System.out.print("Type \"play\" to play the game, \"exit\" to quit: > ");
+            String choice = scanner.nextLine().trim().toLowerCase();
+
+            if ("exit".equals(choice)) {
+                break;
+            } else if ("play".equals(choice)) {
+                playGame(scanner);
+            }
+        }
+        scanner.close();
+    }
+
+    private static void playGame(Scanner scanner) {
+
         Random random = new Random();
 
         String secrWord = WORDS[random.nextInt(WORDS.length)];
@@ -18,7 +36,7 @@ public class hangman {
         int attemptsLeft = MAX_ATTEMPTS;
         boolean wordGuess = false;
 
-        System.out.println("HANGMAN:penultimate");
+        System.out.println();
         System.out.println("You have only 8 attempts...");
         System.out.println();
 
@@ -69,7 +87,7 @@ public class hangman {
 
         if (wordGuess) {
             System.out.println();
-            System.out.println("You won and survive! You guessed the word " + secrWord + "!");
+            System.out.println("You won and survive! You guessed the word!");
             System.out.println();
             System.out.println("We'll see how well you did in the next stage...");
         } else {
@@ -78,7 +96,6 @@ public class hangman {
 
 
 
-        scanner.close();
     }
 
 
