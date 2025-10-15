@@ -1,4 +1,5 @@
 package Hangman;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -10,8 +11,18 @@ public class hangman {
 
         String secrWord = WORDS[random.nextInt(WORDS.length)];
 
-        System.out.println("HANGMAN:begin");
-        System.out.print("Guess the word: > ");
+        StringBuilder hint = new StringBuilder();
+        for (int i = 0; i < secrWord.length(); i++) {
+            if (i < 2) {
+                hint.append(secrWord.charAt(i));
+            } else {
+                hint.append("-");
+            }
+        }
+
+
+        System.out.println("HANGMAN2");
+        System.out.print("Guess the word " + hint + ": > ");
         String guess = scanner.nextLine();
 
 
