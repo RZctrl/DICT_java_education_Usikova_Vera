@@ -14,19 +14,21 @@ public class hangman {
 
         Set<Character> guessLetters = new HashSet<>();
         int attemptsLeft = MAX_ATTEMPTS;
+        boolean wordGuess = false;
 
 
 
 
-        System.out.println("HANGMAN4");
+        System.out.println("HANGMAN5");
         System.out.println("You have only 8 attempts...");
         System.out.println();
 
 
-        while (attemptsLeft > 0) {
+        while (attemptsLeft > 0 && !wordGuess) {
             displayWord(secrWord, guessLetters);
 
             if (isWordGuessed(secrWord, guessLetters)) {
+                wordGuess = true;
                 break;
             }
 
@@ -40,7 +42,12 @@ public class hangman {
             char letter = input.charAt(0);
 
             if (secrWord.indexOf(letter) >= 0) {
-                guessLetters.add(letter);
+                if (guessLetters.contains(letter)) {
+                    System.out.println("No improvements");
+                    attemptsLeft--;
+                } else {
+                    guessLetters.add(letter);
+                }
             } else {
                 System.out.println("No, that letter doesn't need here.");
                 attemptsLeft--;
@@ -49,11 +56,16 @@ public class hangman {
             System.out.println();
         }
 
-        System.out.println();
-        System.out.println("You won and survive!");
-        System.out.println("Thanks for playing!");
-        System.out.println();
-        System.out.println("We'll see how well you did in the next stage...");
+        if (wordGuess) {
+            System.out.println();
+            System.out.println("You won and survive!");
+            System.out.println("Thanks for playing!");
+            System.out.println();
+            System.out.println("We'll see how well you did in the next stage...");
+        } else {
+            System.out.println("You lost again!");
+        }
+
 
         scanner.close();
     }
