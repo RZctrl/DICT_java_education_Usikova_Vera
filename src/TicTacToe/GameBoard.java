@@ -3,12 +3,9 @@ package TicTacToe;
 public class GameBoard {
     private char[][] grid;
 
-
-
     public GameBoard() {
         grid = new char[3][3];
     }
-
 
 
     public void initializeFromString(String input) {
@@ -20,7 +17,6 @@ public class GameBoard {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 char symbol = input.charAt(index++);
-
                 if (symbol != 'X' && symbol != 'O' && symbol != '_') {
                     symbol = '_';
                 }
@@ -28,6 +24,7 @@ public class GameBoard {
             }
         }
     }
+
 
 
 
@@ -45,6 +42,7 @@ public class GameBoard {
     }
 
 
+
     public char getCell(int row, int col) {
         if (row >= 0 && row < 3 && col >= 0 && col < 3) {
             return grid[row][col];
@@ -52,11 +50,16 @@ public class GameBoard {
         return ' ';
     }
 
+
+
     public void setCell(int row, int col, char value) {
         if (row >= 0 && row < 3 && col >= 0 && col < 3) {
             grid[row][col] = value;
         }
     }
+
+
+
 
     public int countSymbol(char symbol) {
         int count = 0;
@@ -70,6 +73,8 @@ public class GameBoard {
         return count;
     }
 
+
+
     public boolean hasEmptyCells() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -80,6 +85,8 @@ public class GameBoard {
         }
         return false;
     }
+
+
 
     public boolean hasWinningLine(char symbol) {
 
@@ -106,8 +113,6 @@ public class GameBoard {
     }
 }
 
-
-
 class GameAnalyzer {
     private GameBoard board;
 
@@ -124,12 +129,9 @@ class GameAnalyzer {
         boolean oWins = board.hasWinningLine('O');
         boolean hasEmptyCells = board.hasEmptyCells();
 
-
-
         if (difference >= 2 || (xWins && oWins)) {
             return "Impossible";
         }
-
 
         if (xWins) {
             return "X wins";
@@ -141,7 +143,6 @@ class GameAnalyzer {
         if (!hasEmptyCells) {
             return "Draw";
         }
-
 
         return "Game not finished";
     }
