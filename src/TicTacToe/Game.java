@@ -5,10 +5,12 @@ import java.util.*;
 
 public class Game {
     private GameBoard board;
+    private GameAnalyzer analyzer;
     private Scanner scanner;
 
     public Game() {
         board = new GameBoard();
+        analyzer = new GameAnalyzer(board);
         scanner = new Scanner(System.in);
     }
 
@@ -18,5 +20,8 @@ public class Game {
 
         board.initializeFromString(input);
         board.printFormattedBoard();
+
+        String gameState = analyzer.analyzeGameState();
+        System.out.println(gameState);
     }
 }
