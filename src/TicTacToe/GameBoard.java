@@ -3,44 +3,41 @@ package TicTacToe;
 public class GameBoard {
     private char[][] grid;
 
+
     public GameBoard() {
         grid = new char[3][3];
-        initializeBoard();
-    }
-
-
-    private void initializeBoard() {
-
-        grid[0][0] = 'X';
-        grid[0][1] = 'O';
-        grid[0][2] = 'X';
-
-        grid[1][0] = 'O';
-        grid[1][1] = 'X';
-        grid[1][2] = 'O';
-
-
-        grid[2][0] = 'X';
-        grid[2][1] = 'X';
-        grid[2][2] = 'O';
     }
 
 
 
+    public void initializeFromString(String input) {
+        if (input.length() != 9) {
+            return;
+        }
 
-    public void printBoard() {
+        int index = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                System.out.print(grid[i][j]);
-                if (j < 2) {
-                    System.out.print(" ");
+                char symbol = input.charAt(index++);
+                if (symbol != 'X' && symbol != 'O' && symbol != '_') {
+                    symbol = '_';
                 }
+                grid[i][j] = symbol;
             }
-            System.out.println();
         }
     }
 
-
+    public void printFormattedBoard() {
+        System.out.println("---------");
+        for (int i = 0; i < 3; i++) {
+            System.out.print("| ");
+            for (int j = 0; j < 3; j++) {
+                System.out.print(grid[i][j] + " ");
+            }
+            System.out.println("|");
+        }
+        System.out.println("---------");
+    }
 
     public char getCell(int row, int col) {
         if (row >= 0 && row < 3 && col >= 0 && col < 3) {
@@ -48,6 +45,7 @@ public class GameBoard {
         }
         return ' ';
     }
+
 
 
     public void setCell(int row, int col, char value) {
