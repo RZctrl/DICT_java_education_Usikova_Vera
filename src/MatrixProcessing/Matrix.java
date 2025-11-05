@@ -5,28 +5,25 @@ import java.util.*;
 public class Matrix {
     private final int rows;
     private final int cols;
-    private final double[][] data;
+    private final double[][] values;
 
     public Matrix(int rows, int cols) {
+        this(rows, cols, new double[rows][cols]);
+    }
+
+    public Matrix(int rows, int cols, double[][] values) {
         this.rows = rows;
         this.cols = cols;
-        this.data = new double[rows][cols];
+        this.values = values;
     }
 
-    public int getRows() {
-        return rows;
+
+    public double getValue(int row, int col) {
+        return values[row][col];
     }
 
-    public int getCols() {
-        return cols;
-    }
-
-    public double getElement(int row, int col) {
-        return data[row][col];
-    }
-
-    public void setElement(int row, int col, double value) {
-        data[row][col] = value;
+    public void setValue(int row, int col, double value) {
+        values[row][col] = value;
     }
 
     public static Matrix readMatrix(Scanner scanner) {
@@ -36,7 +33,7 @@ public class Matrix {
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                matrix.setElement(i, j, scanner.nextDouble());
+                matrix.setValue(i, j, scanner.nextDouble());
             }
         }
 
@@ -46,7 +43,14 @@ public class Matrix {
     public void printMatrix() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                System.out.print(data[i][j]);
+                double value = values[i][j];
+
+                if (Math.abs(value - Math.round(value)) < 1e-10) {
+                    System.out.print((int) Math.round(value));
+                } else {
+                    System.out.print(value);
+                }
+
                 if (j < cols - 1) {
                     System.out.print(" ");
                 }
@@ -63,7 +67,17 @@ public class Matrix {
         Matrix result = new Matrix(rows, cols);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                result.setElement(i, j, this.getElement(i, j) + other.getElement(i, j));
+                result.setValue(i, j, this.getValue(i, j) + other.getValue(i, j));
+            }
+        }
+        return result;
+    }
+
+    public Matrix multiplyByConstant(double constant) {
+        Matrix result = new Matrix(rows, cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result.setValue(i, j, this.getValue(i, j) * constant);
             }
         }
         return result;

@@ -6,20 +6,16 @@ public class MatrixProcessing {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+        System.out.print("Enter size of matrix: > ");
+        Matrix matrix = Matrix.readMatrix(scanner);
 
-        Matrix matrixA = Matrix.readMatrix(scanner);
+        System.out.print("Enter constant: > ");
+        double constant = scanner.nextDouble();
 
-        Matrix matrixB = Matrix.readMatrix(scanner);
+        Matrix result = matrix.multiplyByConstant(constant);
 
-
-        Matrix result = matrixA.add(matrixB);
-
-
-        if (result != null) {
-            result.printMatrix();
-        } else {
-            System.out.println("ERROR");
-        }
+        System.out.println("Result:");
+        result.printMatrix();
 
         scanner.close();
     }
