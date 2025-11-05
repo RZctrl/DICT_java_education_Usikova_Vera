@@ -17,7 +17,6 @@ public class Matrix {
         this.values = values;
     }
 
-
     public double getValue(int row, int col) {
         return values[row][col];
     }
@@ -78,6 +77,24 @@ public class Matrix {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 result.setValue(i, j, this.getValue(i, j) * constant);
+            }
+        }
+        return result;
+    }
+
+    public Matrix multiply(Matrix other) {
+        if (this.cols != other.rows) {
+            return null;
+        }
+
+        Matrix result = new Matrix(this.rows, other.cols);
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < other.cols; j++) {
+                double sum = 0;
+                for (int k = 0; k < this.cols; k++) {
+                    sum += this.getValue(i, k) * other.getValue(k, j);
+                }
+                result.setValue(i, j, sum);
             }
         }
         return result;
