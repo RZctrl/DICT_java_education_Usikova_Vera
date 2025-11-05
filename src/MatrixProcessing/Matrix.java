@@ -99,4 +99,44 @@ public class Matrix {
         }
         return result;
     }
+
+    public Matrix transposeMainDiagonal() {
+        Matrix result = new Matrix(cols, rows);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result.setValue(j, i, this.getValue(i, j));
+            }
+        }
+        return result;
+    }
+
+    public Matrix transposeSideDiagonal() {
+        Matrix result = new Matrix(cols, rows);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result.setValue(cols - 1 - j, rows - 1 - i, this.getValue(i, j));
+            }
+        }
+        return result;
+    }
+
+    public Matrix transposeVertical() {
+        Matrix result = new Matrix(rows, cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result.setValue(i, cols - 1 - j, this.getValue(i, j));
+            }
+        }
+        return result;
+    }
+
+    public Matrix transposeHorizontal() {
+        Matrix result = new Matrix(rows, cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result.setValue(rows - 1 - i, j, this.getValue(i, j));
+            }
+        }
+        return result;
+    }
 }

@@ -10,8 +10,9 @@ public class MatrixProcessing {
             System.out.println("\n1. Add matrices");
             System.out.println("2. Multiply matrix by a constant");
             System.out.println("3. Multiply matrices");
+            System.out.println("4. Transpose matrix");
             System.out.println("0. Exit");
-            System.out.print("Enter your choice: > ");
+            System.out.print("Your choice: > ");
 
             int choice = scanner.nextInt();
 
@@ -25,17 +26,20 @@ public class MatrixProcessing {
                 case 3:
                     multiplyMatrices(scanner);
                     break;
+                case 4:
+                    transposeMatrix(scanner);
+                    break;
                 case 0:
                     scanner.close();
                     return;
                 default:
-                    System.out.println("Invalid.");
+                    System.out.println("\nInvalid choice.");
             }
         }
     }
 
     private static void addMatrices(Scanner scanner) {
-        System.out.print("Enter size of first matrix: > ");
+        System.out.print("\nEnter size of first matrix: > ");
         Matrix matrix1 = Matrix.readMatrix(scanner);
 
         System.out.print("Enter size of second matrix: > ");
@@ -46,13 +50,13 @@ public class MatrixProcessing {
         if (result == null) {
             System.out.println("The operation cannot be performed.");
         } else {
-            System.out.println("Result:");
+            System.out.println("\nResult:");
             result.printMatrix();
         }
     }
 
     private static void multiplyByConstant(Scanner scanner) {
-        System.out.print("Enter size of matrix: > ");
+        System.out.print("\nEnter size of matrix: > ");
         Matrix matrix = Matrix.readMatrix(scanner);
 
         System.out.print("Enter constant: > ");
@@ -60,12 +64,12 @@ public class MatrixProcessing {
 
         Matrix result = matrix.multiplyByConstant(constant);
 
-        System.out.println("Result:");
+        System.out.println("\nResult:");
         result.printMatrix();
     }
 
     private static void multiplyMatrices(Scanner scanner) {
-        System.out.print("Enter size of first matrix: > ");
+        System.out.print("\nEnter size of first matrix: > ");
         Matrix matrix1 = Matrix.readMatrix(scanner);
 
         System.out.print("Enter size of second matrix: > ");
@@ -76,8 +80,43 @@ public class MatrixProcessing {
         if (result == null) {
             System.out.println("The operation cannot be performed.");
         } else {
-            System.out.println("Result:");
+            System.out.println("\nResult:");
             result.printMatrix();
         }
+    }
+
+    private static void transposeMatrix(Scanner scanner) {
+        System.out.println("\n1. Main diagonal");
+        System.out.println("2. Side diagonal");
+        System.out.println("3. Vertical line");
+        System.out.println("4. Horizontal line");
+        System.out.print("Your choice: > ");
+
+        int transposeChoice = scanner.nextInt();
+
+        System.out.print("\nEnter matrix size: > ");
+        Matrix matrix = Matrix.readMatrix(scanner);
+
+        Matrix result;
+        switch (transposeChoice) {
+            case 1:
+                result = matrix.transposeMainDiagonal();
+                break;
+            case 2:
+                result = matrix.transposeSideDiagonal();
+                break;
+            case 3:
+                result = matrix.transposeVertical();
+                break;
+            case 4:
+                result = matrix.transposeHorizontal();
+                break;
+            default:
+                System.out.println("\nInvalid choice");
+                return;
+        }
+
+        System.out.println("\nResult:");
+        result.printMatrix();
     }
 }
