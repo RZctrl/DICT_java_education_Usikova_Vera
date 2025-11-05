@@ -48,7 +48,7 @@ public class Matrix {
                 if (Math.abs(value - Math.round(value)) < 1e-10) {
                     System.out.print((int) Math.round(value));
                 } else {
-                    System.out.print(value);
+                    System.out.print(Math.round(value * 100.0) / 100.0);
                 }
 
                 if (j < cols - 1) {
@@ -202,5 +202,72 @@ public class Matrix {
 
     public boolean isSquare() {
         return rows == cols;
+    }
+
+
+
+
+    public Matrix inverse() {
+        if (!isSquare()) {
+            throw new IllegalArgumentException("Matrix must be square");
+        }
+
+        double det = determinant();
+        if (Math.abs(det) < 1e-10) {
+            throw new ArithmeticException("Inverse does not exist");
+        }
+
+        int n = rows;
+
+        if (n == 1) {
+            double[][] result = {{1.0 / values[0][0]}};
+            return new Matrix(1, 1, result);
+        }
+
+        if (n == 2) {
+            double a = values[0][0];
+            double b = values[0][1];
+            double c = values[1][0];
+            double d = values[1][1];
+
+            double[][] result = {
+                    {d / det, -b / det},
+                    {-c / det, a / det}
+            };
+            return new Matrix(2, 2, result);
+        }
+
+
+
+
+
+
+        Matrix cofMatrix = new Matrix(n, n);
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                double[][] minor = getMinor(values, i, j);
+                double cofactor = calculateDet(minor);
+                double sign = ((i + j) % 2 == 0) ? 1 : -1;
+                cofMatrix.set(i, j, sign * cofactor);
+            }
+        }
+
+
+        Matrix adjugate = cofMatrix.transposeMainD();
+
+
+
+        return adjugate.multiply(1.0 / det);
+    }
+
+
+
+    public static Matrix identity(int size) {
+        Matrix identity = new Matrix(size, size);
+        for (int i = 0; i < size; i++) {
+            identity.set(i, i, 1.0);
+        }
+        return identity;
     }
 }

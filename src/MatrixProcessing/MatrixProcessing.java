@@ -12,6 +12,7 @@ public class MatrixProcessing {
             System.out.println("3. Multiply matrices");
             System.out.println("4. Transpose matrix");
             System.out.println("5. Calculate a determinant");
+            System.out.println("6. Inverse matrix");
             System.out.println("0. Exit");
             System.out.print("Your choice: > ");
 
@@ -32,6 +33,9 @@ public class MatrixProcessing {
                     break;
                 case 5:
                     calculateDeterminant(scanner);
+                    break;
+                case 6:
+                    inverseMatrix(scanner);
                     break;
                 case 0:
                     scanner.close();
@@ -128,7 +132,7 @@ public class MatrixProcessing {
         Matrix matrix = Matrix.read(scanner);
 
         if (!matrix.isSquare()) {
-            System.out.println("The operation cannot be performed. Matrix must be square.");
+            System.out.println("Matrix must be square.");
             return;
         }
 
@@ -136,14 +140,36 @@ public class MatrixProcessing {
             double determinant = matrix.determinant();
 
             if (Math.abs(determinant - Math.round(determinant)) < 1e-10) {
-                System.out.println("The result is:");
+                System.out.println("\nResult:");
                 System.out.println((int) Math.round(determinant));
             } else {
-                System.out.println("The result is:");
+                System.out.println("\nResult:");
                 System.out.println(determinant);
             }
         } catch (Exception e) {
-            System.out.println("Error calculating determinant: " + e.getMessage());
+            System.out.println("Error calculating determinant.");
+        }
+    }
+
+
+
+    private static void inverseMatrix(Scanner scanner) {
+        System.out.print("Enter matrix size: > ");
+        Matrix matrix = Matrix.read(scanner);
+
+        if (!matrix.isSquare()) {
+            System.out.println("Matrix must be square.");
+            return;
+        }
+
+        try {
+            Matrix inverse = matrix.inverse();
+            System.out.println("\nResult:");
+            inverse.print();
+        } catch (ArithmeticException e) {
+            System.out.println("This matrix doesn't have an inverse.");
+        } catch (Exception e) {
+            System.out.println("Error calculating inverse matrix.");
         }
     }
 }
