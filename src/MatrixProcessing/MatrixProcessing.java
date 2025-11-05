@@ -11,6 +11,7 @@ public class MatrixProcessing {
             System.out.println("2. Multiply matrix by a constant");
             System.out.println("3. Multiply matrices");
             System.out.println("4. Transpose matrix");
+            System.out.println("5. Calculate a determinant");
             System.out.println("0. Exit");
             System.out.print("Your choice: > ");
 
@@ -21,13 +22,16 @@ public class MatrixProcessing {
                     addMatrices(scanner);
                     break;
                 case 2:
-                    multiplyByConstant(scanner);
+                    multiply(scanner);
                     break;
                 case 3:
-                    multiplyMatrices(scanner);
+                    multiplyMatr(scanner);
                     break;
                 case 4:
                     transposeMatrix(scanner);
+                    break;
+                case 5:
+                    calculateDeterminant(scanner);
                     break;
                 case 0:
                     scanner.close();
@@ -40,10 +44,10 @@ public class MatrixProcessing {
 
     private static void addMatrices(Scanner scanner) {
         System.out.print("\nEnter size of first matrix: > ");
-        Matrix matrix1 = Matrix.readMatrix(scanner);
+        Matrix matrix1 = Matrix.read(scanner);
 
         System.out.print("Enter size of second matrix: > ");
-        Matrix matrix2 = Matrix.readMatrix(scanner);
+        Matrix matrix2 = Matrix.read(scanner);
 
         Matrix result = matrix1.add(matrix2);
 
@@ -51,29 +55,29 @@ public class MatrixProcessing {
             System.out.println("The operation cannot be performed.");
         } else {
             System.out.println("\nResult:");
-            result.printMatrix();
+            result.print();
         }
     }
 
-    private static void multiplyByConstant(Scanner scanner) {
+    private static void multiply(Scanner scanner) {
         System.out.print("\nEnter size of matrix: > ");
-        Matrix matrix = Matrix.readMatrix(scanner);
+        Matrix matrix = Matrix.read(scanner);
 
         System.out.print("Enter constant: > ");
         double constant = scanner.nextDouble();
 
-        Matrix result = matrix.multiplyByConstant(constant);
+        Matrix result = matrix.multiply(constant);
 
         System.out.println("\nResult:");
-        result.printMatrix();
+        result.print();
     }
 
-    private static void multiplyMatrices(Scanner scanner) {
+    private static void multiplyMatr(Scanner scanner) {
         System.out.print("\nEnter size of first matrix: > ");
-        Matrix matrix1 = Matrix.readMatrix(scanner);
+        Matrix matrix1 = Matrix.read(scanner);
 
         System.out.print("Enter size of second matrix: > ");
-        Matrix matrix2 = Matrix.readMatrix(scanner);
+        Matrix matrix2 = Matrix.read(scanner);
 
         Matrix result = matrix1.multiply(matrix2);
 
@@ -81,7 +85,7 @@ public class MatrixProcessing {
             System.out.println("The operation cannot be performed.");
         } else {
             System.out.println("\nResult:");
-            result.printMatrix();
+            result.print();
         }
     }
 
@@ -95,15 +99,15 @@ public class MatrixProcessing {
         int transposeChoice = scanner.nextInt();
 
         System.out.print("\nEnter matrix size: > ");
-        Matrix matrix = Matrix.readMatrix(scanner);
+        Matrix matrix = Matrix.read(scanner);
 
         Matrix result;
         switch (transposeChoice) {
             case 1:
-                result = matrix.transposeMainDiagonal();
+                result = matrix.transposeMainD();
                 break;
             case 2:
-                result = matrix.transposeSideDiagonal();
+                result = matrix.transposeSideD();
                 break;
             case 3:
                 result = matrix.transposeVertical();
@@ -117,6 +121,29 @@ public class MatrixProcessing {
         }
 
         System.out.println("\nResult:");
-        result.printMatrix();
+        result.print();
+    }
+    private static void calculateDeterminant(Scanner scanner) {
+        System.out.print("Enter matrix size: > ");
+        Matrix matrix = Matrix.read(scanner);
+
+        if (!matrix.isSquare()) {
+            System.out.println("The operation cannot be performed. Matrix must be square.");
+            return;
+        }
+
+        try {
+            double determinant = matrix.determinant();
+
+            if (Math.abs(determinant - Math.round(determinant)) < 1e-10) {
+                System.out.println("The result is:");
+                System.out.println((int) Math.round(determinant));
+            } else {
+                System.out.println("The result is:");
+                System.out.println(determinant);
+            }
+        } catch (Exception e) {
+            System.out.println("Error calculating determinant: " + e.getMessage());
+        }
     }
 }
