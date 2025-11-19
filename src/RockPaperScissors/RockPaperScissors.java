@@ -61,6 +61,19 @@ class RandomChoice implements Strategy {
     }
 }
 
+
+class InputValidator {
+    public static boolean isValidChoice(String input) {
+        return input.equals("rock") || input.equals("paper") || input.equals("scissors");
+    }
+
+    public static boolean isExitCommand(String input) {
+        return input.equals("!exit");
+    }
+}
+
+
+
 class RockPaperScissorsGame {
     private final Strategy strategy;
 
@@ -101,19 +114,22 @@ public class RockPaperScissors {
         Strategy strategy = new RandomChoice();
         RockPaperScissorsGame game = new RockPaperScissorsGame(strategy);
 
+        System.out.println("Rock-Paper-Scissors. Enter your choice or '!exit' to quit.");
+
+
         System.out.print("> ");
-        String userInput = scanner.nextLine().trim().toLowerCase();
+        while (true) {
+            System.out.print("> ");
+            String userInput = scanner.nextLine().trim().toLowerCase();
 
-        if (!isValidChoice(userInput)) {
-            System.out.println("Invalid input. Please enter 'rock', 'paper', or 'scissors'.");
-        } else {
-            game.play(userInput);
+            if (InputValidator.isExitCommand(userInput)) {
+                System.out.println("Bye!");
+                break;
+            } else if (InputValidator.isValidChoice(userInput)) {
+                game.play(userInput);
+            } else {
+                System.out.println("Invalid input");
+            }
         }
-
-        scanner.close();
     }
-
-    private static boolean isValidChoice(String choice) {
-        return choice.equals("rock") || choice.equals("paper") || choice.equals("scissors");
     }
-}
