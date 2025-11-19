@@ -6,23 +6,7 @@ interface Strategy {
     GameResult playRound(String userChoice);
 }
 
-class GameResult {
-    private final String computerChoice;
-    private final Result result;
 
-    public GameResult(String computerChoice, Result result) {
-        this.computerChoice = computerChoice;
-        this.result = result;
-    }
-
-    public String getComputerChoice() {
-        return computerChoice;
-    }
-
-    public Result getResult() {
-        return result;
-    }
-}
 
 enum Result {
     WIN, LOSE, DRAW
@@ -62,74 +46,39 @@ class RandomChoice implements Strategy {
 }
 
 
-class InputValidator {
-    public static boolean isValidChoice(String input) {
-        return input.equals("rock") || input.equals("paper") || input.equals("scissors");
-    }
-
-    public static boolean isExitCommand(String input) {
-        return input.equals("!exit");
-    }
-}
-
-
-
-class RockPaperScissorsGame {
-    private final Strategy strategy;
-
-    public RockPaperScissorsGame(Strategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public void play(String userChoice) {
-        try {
-            GameResult result = strategy.playRound(userChoice);
-            printResult(result);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid input. Please enter 'rock', 'paper', or 'scissors'.");
-        }
-    }
-
-    private void printResult(GameResult result) {
-        String compChoice = result.getComputerChoice();
-
-        switch (result.getResult()) {
-            case LOSE:
-                System.out.println("Sorry, but the computer chose " + compChoice);
-                break;
-            case DRAW:
-                System.out.println("There is a draw (" + compChoice + ")");
-                break;
-            case WIN:
-                System.out.println("Well done. The computer chose " + compChoice + " and failed");
-                break;
-        }
-    }
-}
 
 public class RockPaperScissors {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+        System.out.print("Enter your name: ");
+        String playerName = scanner.nextLine().trim();
+        Rating rating = new Rating("rating.txt");
+
+
         Strategy strategy = new RandomChoice();
-        RockPaperScissorsGame game = new RockPaperScissorsGame(strategy);
+        SmthGameRate game = new SmthGameRate(strategy, rating, playerName);
 
-        System.out.println("Rock-Paper-Scissors. Enter your choice or '!exit' to quit.");
+        System.out.println("Hello, " + playerName);
+        System.out.println("\nRock-Paper-Scissors. Enter your choice or '!exit' to quit.");
 
 
-        System.out.print("> ");
+
         while (true) {
             System.out.print("> ");
             String userInput = scanner.nextLine().trim().toLowerCase();
 
-            if (InputValidator.isExitCommand(userInput)) {
+            if (InputValidator.isExit(userInput)) {
                 System.out.println("Bye!");
                 break;
+            } else if (InputValidator.isRating(userInput)) {
+                game.showScore();
             } else if (InputValidator.isValidChoice(userInput)) {
-                game.play(userInput);
+                game.playRound(userInput);
             } else {
                 System.out.println("Invalid input");
             }
         }
+        scanner.close();
     }
-    }
+}
