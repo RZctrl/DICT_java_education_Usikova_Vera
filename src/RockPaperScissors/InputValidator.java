@@ -1,15 +1,20 @@
 package RockPaperScissors;
 
 public class InputValidator {
-    public static boolean isValidChoice(String input) {
-        return input.equals("rock") || input.equals("paper") || input.equals("scissors");
+    public static boolean isValidChoice(String input, String[] validOptions) {
+        for (String option : validOptions) {
+            if (option.equalsIgnoreCase(input)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isExit(String input) {
-        return input.equals("!exit");
+        return "!exit".equals(input);
     }
 
     public static boolean isRating(String input) {
-        return input.equals("!rating");
+        return "!rating".equals(input);
     }
 }

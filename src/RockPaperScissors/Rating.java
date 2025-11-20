@@ -18,19 +18,26 @@ public class Rating {
     private void loadRatings() {
         File file = new File(fileName);
         if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                System.out.println("Error creating rating file");
+            }
             return;
         }
 
         try (Scanner fileScanner = new Scanner(file)) {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine().trim();
-                String[] parts = line.split(" ");
-                if (parts.length == 2) {
-                    try {
-                        String name = parts[0];
-                        int score = Integer.parseInt(parts[1]);
-                        ratings.put(name, score);
-                    } catch (NumberFormatException e) {
+                if (!line.isEmpty()) {
+                    String[] parts = line.split("\\s+");
+                    if (parts.length >= 2) {
+                        try {
+                            String name = parts[0];
+                            int score = Integer.parseInt(parts[1]);
+                            ratings.put(name, score);
+                        } catch (NumberFormatException e) {
+                        }
                     }
                 }
             }
@@ -39,23 +46,24 @@ public class Rating {
         }
     }
 
-    public int getScore(String playerName) {
-        return ratings.getOrDefault(playerName, 0);
-    }
+        public int getScore(String playerName) {
+            return ratings.getOrDefault(playerName, 0);
+        }
 
-    public void updateScore(String playerName, int points) {
-        int currentScore = getScore(playerName);
-        ratings.put(playerName, currentScore + points);
-        saveRatings();
-    }
+        public void updateScore(String playerName, int points) {
+            int currentScore = getScore(playerName);
+            int newScore = currentScore + points;
+            ratings.put(playerName, newScore);
+            saveRatings();
+        }
 
-    private void saveRatings() {
-        try (PrintWriter writer = new PrintWriter(fileName)) {
-            for (Map.Entry<String, Integer> entry : ratings.entrySet()) {
-                writer.println(entry.getKey() + " " + entry.getValue());
+        private void saveRatings() {
+            try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+                for (Map.Entry<String, Integer> entry : ratings.entrySet()) {
+                    writer.println(entry.getKey() + " " + entry.getValue());
+                }
+            } catch (IOException e) {
+                System.out.println("Error saving ratings: " + e.getMessage());
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error saving ratings");
         }
     }
-}

@@ -14,10 +14,15 @@ enum Result {
 
 class RandomChoice implements Strategy {
     private final Random random;
-    private final String[] options = {"rock", "paper", "scissors"};
+    private String[] options;
 
-    public RandomChoice() {
+    public RandomChoice(String[] options) {
         this.random = new Random();
+        this.options = options;
+    }
+
+    public void setOptions(String[] options) {
+        this.options = options;
     }
 
     @Override
@@ -37,11 +42,22 @@ class RandomChoice implements Strategy {
             return Result.DRAW;
         }
 
-        boolean userWins = (user.equals("rock") && comp.equals("scissors")) ||
-                (user.equals("paper") && comp.equals("rock")) ||
-                (user.equals("scissors") && comp.equals("paper"));
+        List<String> optionsList = Arrays.asList(options);
+        int userIndex = optionsList.indexOf(user);
+        int compIndex = optionsList.indexOf(comp);
 
-        return userWins ? Result.WIN : Result.LOSE;
+        int half = options.length / 2;
+        Set<String> losOptions = new HashSet<>();
+
+        for (int i = 1; i <= half; i++) {
+            int losIndex = (userIndex + i) % options.length;
+            losOptions.add(options[losIndex]);
+        }
+        if (losOptions.contains(comp)) {
+            return Result.WIN;
+        } else {
+            return Result.LOSE;
+        }
     }
 }
 
@@ -56,11 +72,32 @@ public class RockPaperScissors {
         Rating rating = new Rating("rating.txt");
 
 
-        Strategy strategy = new RandomChoice();
+        String[] defOptions = {"rock", "paper", "scissors"};
+        Strategy strategy = new RandomChoice(defOptions);
         SmthGameRate game = new SmthGameRate(strategy, rating, playerName);
 
         System.out.println("Hello, " + playerName);
-        System.out.println("\nRock-Paper-Scissors. Enter your choice or '!exit' to quit.");
+        System.out.println("Enter game options (comma-separated) or empty for default:");
+        String optionsInput = scanner.nextLine().trim();
+
+        String[] gameOptions;
+        if (optionsInput.isEmpty()) {
+            gameOptions = defOptions;
+            System.out.println("Using default options: rock, paper, scissors");
+        } else {
+            gameOptions = optionsInput.split("\\s*,\\s*");
+            for (int i = 0; i < gameOptions.length; i++) {
+                gameOptions[i] = gameOptions[i].toLowerCase().trim();
+            }
+            ((RandomChoice) strategy).setOptions(gameOptions);
+            System.out.println("Using custom options: " + String.join(", ", gameOptions));
+        }
+
+
+        System.out.println("\nOkay, let's start");
+        System.out.println("Rock-Paper-Scissors. Enter your choice or '!exit' to quit.");
+        System.out.println("Available options: " + String.join(", ", gameOptions));
+
 
 
 
@@ -73,7 +110,7 @@ public class RockPaperScissors {
                 break;
             } else if (InputValidator.isRating(userInput)) {
                 game.showScore();
-            } else if (InputValidator.isValidChoice(userInput)) {
+            } else if (InputValidator.isValidChoice(userInput, gameOptions)) {
                 game.playRound(userInput);
             } else {
                 System.out.println("Invalid input");
