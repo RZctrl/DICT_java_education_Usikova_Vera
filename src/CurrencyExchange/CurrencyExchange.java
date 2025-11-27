@@ -6,31 +6,56 @@ public class CurrencyExchange {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         RatesClient client = new RatesClient();
+        Map<String, Currency> cache = new HashMap<>();
 
-        System.out.print("Enter your currency code \n> ");
-        String baseCurrency = scanner.nextLine().trim().toUpperCase();
+        System.out.print("Enter currency code \n> ");
+        String baseCurrency = scanner.nextLine().trim().toLowerCase();
 
-        System.out.print("Enter the amount to convert \n> ");
-        double amount = scanner.nextDouble();
+        Currency[] initialRates = client.getRates(baseCurrency);
+        if (initialRates != null) {
+            if (initialRates[0] != null) cache.put("USD", initialRates[0]);
+            if (initialRates[1] != null) cache.put("EUR", initialRates[1]);
+        }
 
+        while (true) {
+            System.out.print("Enter currency code for conversion \n> ");
+            String targetCurrencyInput = scanner.nextLine().trim().toLowerCase();
 
-        Currency[] rates = client.getRates(baseCurrency);
+            if (targetCurrencyInput.isEmpty()) {
+                break;
+            }
 
-        if (rates != null && rates[0] != null && rates[1] != null) {
+            System.out.print("Enter amount to convert \n>");
+            double amount;
+            try {
+                amount = scanner.nextDouble();
+                scanner.nextLine();
+            } catch (Exception e) {
+                System.out.println("Invalid input");
+                scanner.nextLine();
+                continue;
+            }
 
-            System.out.println("\nExchange rates:");
-            System.out.println(rates[0]);
-            System.out.println(rates[1]);
+            System.out.println("Checking the cache...");
 
+            Currency targetRate = cache.get(targetCurrencyInput);
 
-            System.out.println("\nConversion results:");
-            double convertToUSD = client.convertCurrency(amount, rates[0].getRate());
-            double convertToEUR = client.convertCurrency(amount, rates[1].getRate());
+            if (targetRate != null) {
+                System.out.println("It is in the cache!");
+            } else {
+                System.out.println("Sorry, but it is not in the cache!");
+                Currency newRate = client.getRateForCurrency(baseCurrency, targetCurrencyInput);
+                if (newRate != null) {
+                    cache.put(targetCurrencyInput, newRate);
+                    targetRate = newRate;
+                } else {
+                    System.out.println("Failed to get exchange rate");
+                    continue;
+                }
+            }
 
-            System.out.printf("%.2f %s = %.2f USD\n", amount, baseCurrency, convertToUSD);
-            System.out.printf("%.2f %s = %.2f EUR\n", amount, baseCurrency, convertToEUR);
-        } else {
-            System.out.println("Failed to fetch exchange rates for currency: " + baseCurrency);
+            double convertedAmount = client.convertCurrency(amount, targetRate.getRate());
+            System.out.printf("You received %.2f %s.\n", convertedAmount, targetCurrencyInput);
         }
 
         scanner.close();

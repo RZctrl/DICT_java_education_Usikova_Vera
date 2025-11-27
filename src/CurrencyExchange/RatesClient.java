@@ -30,12 +30,18 @@ public class RatesClient {
                 return new Currency[]{usdRate, eurRate};
             }
         } catch (Exception e) {
-            System.err.println("Error fetching exchange rates: " + e.getMessage());
+            System.err.println("Error fetching exchange rates");
             return null;
         }
     }
 
-    private Currency getRateForCurrency(String baseCurrency, String targetCurrency) {
+    public Currency getRateForCurrency(String baseCurrency, String targetCurrency) {
+        if (baseCurrency.equalsIgnoreCase(targetCurrency)) {
+            String name = targetCurrency.equalsIgnoreCase("usd") ? "US Dollar" :
+                    targetCurrency.equalsIgnoreCase("eur") ? "Euro" : targetCurrency;
+            return new Currency(targetCurrency.toLowerCase(), name, 1.0, "N/A");
+        }
+
         try {
             String url = String.format("http://www.floatrates.com/daily/%s.json",
                     baseCurrency.toLowerCase());
@@ -49,7 +55,7 @@ public class RatesClient {
             JSONObject jsonResponse = new JSONObject(response.body());
             return parseCurrencyRate(jsonResponse, targetCurrency);
         } catch (Exception e) {
-            System.err.println("Error fetching rate: " + e.getMessage());
+            System.err.println("Error fetching rate");
             return null;
         }
     }
@@ -64,7 +70,7 @@ public class RatesClient {
 
             return new Currency(code, name, rate, date);
         } catch (JSONException e) {
-            System.err.println("Error parsing data: " + e.getMessage());
+            System.err.println("Error parsing data");
             return null;
         }
     }
