@@ -1,88 +1,78 @@
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class WebPageScraper {
-    private List<Parser> parsers;
     private ArticleSave articleSave;
-    private WebPageSave webPageSave;
-
+    private WebPageSave webPageSaver;
+    private NatureParser natureParser;
 
     public WebPageScraper() {
-        this.parsers = new ArrayList<>();
         this.articleSave = new ArticleSave();
-        this.webPageSave = new WebPageSave();
-        regParser(new ImdbParser());
-        regParser(new NatureParser());
+        this.webPageSaver = new WebPageSave();
+        this.natureParser = new NatureParser();
     }
 
-    private void regParser(Parser parser) {
-        parsers.add(parser);
-    }
+    public void processMultiplePages(int numberOfPages, String articleType) {
+        int totalArticles = 0;
+        List<String> savedFiles = new ArrayList<>();
 
-    public void processUrl(String url) {
-        try {
-            boolean saved = webPageSave.saveWebPage(url);
-            if (!saved) {
-                return;
-            }
+        for (int page = 1; page <= numberOfPages; page++) {
+            String url = "https://www.nature.com/nature/articles?sort=PubDate&year=2023&page=" + page;
 
+            String dirPath = "./Page_" + page + "/";
 
-            Parser suitParser = findSuitableParser(url);
-
-            if (suitParser == null) {
-                System.out.println("Invalid movie page!");
-                return;
-            }
-
-            List<Article> articles = suitParser.parse(url);
-
-            if (url.contains("nature.com")) {
-                System.out.print("Saved articles: [");
-                for (int i = 0; i < articles.size(); i++) {
-                    System.out.print("'" + articles.get(i).getFileName() + "'");
-                    if (i < articles.size() - 1) {
-                        System.out.print(" , ");
+            try {
+                File directory = new File(dirPath);
+                if (!directory.exists()) {
+                    boolean created = directory.mkdirs();
+                    if (!created) {
+                        System.out.println("Failed to create directory: " + dirPath);
+                        continue;
                     }
                 }
-                System.out.println("]");
-            } else {
+                boolean pageSaved = webPageSaver.saveToFile(url, dirPath + "source.html");
+                if (!pageSaved) {
+                    System.out.println("Failed to save page " + page);
+                    continue;
+                }
+
+                List<Article> articles = natureParser.parse(url, articleType);
+                articleSave.saveArticles(articles, dirPath);
+                totalArticles += articles.size();
 
                 for (Article article : articles) {
-                    System.out.println(article);
-                    System.out.println();
+                    savedFiles.add(article.getFileName());
                 }
-            }
-
-            articleSave.saveArticles(articles, "./articles/");
-
-        } catch (IOException e) {
-            System.out.println("Error processing URL: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Unexpected error: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    private Parser findSuitableParser(String url) {
-        for (Parser parser : parsers) {
-            if (parser.canParse(url)) {
-                return parser;
+            } catch (IOException e) {
+                System.out.println("Error processing page " + page + ": " + e.getMessage());
             }
         }
-        return null;
     }
 
     public static void main(String[] args) {
         WebPageScraper scraper = new WebPageScraper();
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Input the URL: ");
-        String url = scanner.nextLine();
+        System.out.print("Enter the number of pages: ");
+        try {
+            int numberOfPages = Integer.parseInt(scanner.nextLine().trim());
 
-        scraper.processUrl(url);
+            System.out.print("Enter article type: ");
+            String articleType = scanner.nextLine().trim();
 
-        scanner.close();
+            if (numberOfPages <= 0) {
+                System.out.println("Number of pages must be positive.");
+            } else {
+                scraper.processMultiplePages(numberOfPages, articleType);
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid number format.");
+        } finally {
+            scanner.close();
+        }
     }
 }

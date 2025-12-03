@@ -9,7 +9,7 @@ import java.util.List;
 public class ImdbParser implements Parser {
 
     @Override
-    public List<Article> parse(String url) throws IOException {
+    public List<Article> parse(String url, String articleType) throws IOException {
         List<Article> articles = new ArrayList<>();
 
         Connection connection = Jsoup.connect(url);
@@ -19,8 +19,8 @@ public class ImdbParser implements Parser {
         String title = doc.title();
         Element metaDescription = doc.select("meta[name=description]").first();
 
-
-        String description = metaDescription.attr("content");
+        String description = metaDescription != null ? metaDescription.attr("content") :
+                "No description available";
 
         Article article = new Article(title, description);
         articles.add(article);
