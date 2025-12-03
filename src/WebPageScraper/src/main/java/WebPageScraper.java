@@ -6,10 +6,13 @@ import java.util.Scanner;
 public class WebPageScraper {
     private List<Parser> parsers;
     private ArticleSave articleSave;
+    private WebPageSave webPageSave;
+
 
     public WebPageScraper() {
         this.parsers = new ArrayList<>();
         this.articleSave = new ArticleSave();
+        this.webPageSave = new WebPageSave();
         regParser(new ImdbParser());
     }
 
@@ -19,6 +22,12 @@ public class WebPageScraper {
 
     public void processUrl(String url) {
         try {
+            boolean saved = webPageSave.saveWebPage(url);
+            if (!saved) {
+                return;
+            }
+
+
             Parser suitParser = findSuitableParser(url);
 
             if (suitParser == null) {
