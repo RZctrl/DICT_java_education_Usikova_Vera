@@ -17,11 +17,19 @@ public class ArticleSave {
 
         for (Article article : articles) {
             try {
-                String filePath = basePath + article.getFileName();
+
+                String fileName = article.getFileName();
+
+                fileName = fileName.replaceAll("^_+|_+$", "");
+                String filePath = basePath + fileName;
+
                 FileWriter writer = new FileWriter(filePath);
                 writer.write(article.getContent());
                 writer.close();
-                System.out.println("Saved: " + filePath);
+
+                if (!fileName.contains("source")) {
+                    System.out.println("Saved article: " + fileName);
+                }
             } catch (IOException e) {
                 System.out.println("Error saving file: " + article.getFileName());
                 e.printStackTrace();

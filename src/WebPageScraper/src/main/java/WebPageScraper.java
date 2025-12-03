@@ -14,6 +14,7 @@ public class WebPageScraper {
         this.articleSave = new ArticleSave();
         this.webPageSave = new WebPageSave();
         regParser(new ImdbParser());
+        regParser(new NatureParser());
     }
 
     private void regParser(Parser parser) {
@@ -37,18 +38,30 @@ public class WebPageScraper {
 
             List<Article> articles = suitParser.parse(url);
 
+            if (url.contains("nature.com")) {
+                System.out.print("Saved articles: [");
+                for (int i = 0; i < articles.size(); i++) {
+                    System.out.print("'" + articles.get(i).getFileName() + "'");
+                    if (i < articles.size() - 1) {
+                        System.out.print(" , ");
+                    }
+                }
+                System.out.println("]");
+            } else {
 
-            for (Article article : articles) {
-                System.out.println(article);
-                System.out.println();
+                for (Article article : articles) {
+                    System.out.println(article);
+                    System.out.println();
+                }
             }
 
             articleSave.saveArticles(articles, "./articles/");
 
         } catch (IOException e) {
-            System.out.println("Invalid movie page!");
-        } catch (Exception e) {
             System.out.println("Error processing URL: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
